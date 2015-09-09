@@ -86,27 +86,16 @@ Vagrant.configure('2') do |config|
     define.vm.provider :digital_ocean do |provider, override|
       provider.image = 'fedora-22-x64'
     end
-  end
 
-  config.vm.define 'u12' do |define|
-    define.vm.hostname = gen_hostname('u12')
+    define.vm.provider :aws do |provider, override|
+      ci_hostname(hostname, provider)
 
-    define.vm.provider :virtualbox do |provider, override|
-      override.vm.box = 'ubuntu/precise64'
-    end
-    define.vm.provider :digital_ocean do |provider, override|
-      provider.image = 'ubuntu-12-04-x64'
-    end
-  end
+      # f22 official
+      # https://getfedora.org/cloud/download/
+      #provider.ami = 'ami-81698dea'
 
-  config.vm.define 'u14' do |define|
-    define.vm.hostname = gen_hostname('u14')
-
-    define.vm.provider :virtualbox do |provider, override|
-      override.vm.box = 'ubuntu/trusty64'
-    end
-    define.vm.provider :digital_ocean do |provider, override|
-      provider.image = 'ubuntu-14-04-x64'
+      provider.ami = 'ami-47cda222'
+      provider.region = 'us-east-1'
     end
   end
 
