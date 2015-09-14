@@ -205,6 +205,8 @@ if File.exist? "#{Dir.home}/.#{SANDBOX_GROUP}"
 else
   if ENV['DO_API_TOKEN']
     DO_API_TOKEN = ENV['DO_API_TOKEN']
+  else
+    DO_API_TOKEN = '<api key...>'
   end
   SSH_PRIVATE_KEY_PATH="#{Dir.home}/.vagrant.d/insecure_private_key"
   SSH_PUBLIC_KEY_NAME='vagrant'
