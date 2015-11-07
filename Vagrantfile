@@ -1,7 +1,7 @@
 required_plugins = %w{
   vagrant-librarian-puppet
   vagrant-puppet-install
-  vagrant-aws
+  vagrant-openstack-provider
 }
 
 plugins_to_install = required_plugins.select { |plugin| not Vagrant.has_plugin? plugin }
@@ -76,6 +76,26 @@ Vagrant.configure('2') do |config|
       # packer built
       provider.ami = ENV['CENTOS7_AMI'] || 'ami-ffe3839a'
       provider.region = 'us-east-1'
+    end
+    define.vm.provider :openstack do |provider, override|
+      #config.vm.define 'jmattvagrant', primary: true do |define|
+      define.vm.box       = 'openstack-test'
+#      define.ssh.username = 'vagrant'
+      config.ssh.username = 'vagrant'
+#      override.ssh.username = 'vagrant'
+      define.vm.provision "shell", inline: "true" # work around for https://github.com/ggiamarchi/vagrant-openstack-provider/issues/240
+      define.ssh.pty = true # recommended in docs for CentOS
+
+      #define.vm.provider :openstack do |os|
+      provider.openstack_auth_url = ENV['OS_AUTH_URL']
+      provider.username           = ENV['OS_USERNAME']
+      provider.password           = ENV['OS_PASSWORD']
+      provider.tenant_name        = ENV['OS_PROJECT_NAME']
+      provider.flavor             = ENV['OS_FLAVOR_NAME'] || 'm1.medium'
+      provider.image              = ENV['OS_IMAGE_NAME'] || 'centos-7-vagrant-1446594702'
+      provider.floating_ip_pool   = 'ext-net'
+      provider.security_groups    = ['default', 'remote SSH', 'remote mosh']
+      provider.networks           = ['fc77a88d-a9fb-47bb-a65d-39d1be7a7174']
     end
   end
 
